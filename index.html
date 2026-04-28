@@ -297,7 +297,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
         <button class="scale-btn" data-v="5" onclick="setScale('stab',5)">5</button>
       </div>
       <div class="scale-legend">1 stormy sea · 2 rippled lake · 3 settling water · 4 still lake · 5 mirror</div>
-      <div class="scale-desc" id="stab-desc">tap a number</div>
+      <div class="scale-desc" id="stab-desc"'></div>
     </div>
 
     <!-- Devotion -->
@@ -311,7 +311,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
         <button class="scale-btn" data-v="5" onclick="setScale('dev',5)">5</button>
       </div>
       <div class="scale-legend">1 cold ash · 2 ember · 3 small flame · 4 steady flame · 5 open fire</div>
-      <div class="scale-desc" id="dev-desc">tap a number</div>
+      <div class="scale-desc" id="dev-desc"'></div>
     </div>
 
     <!-- Bodhichitta -->
@@ -325,7 +325,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
         <button class="scale-btn" data-v="5" onclick="setScale('bodhi',5)">5</button>
       </div>
       <div class="scale-legend">1 dark · 2 candle · 3 lamp · 4 bright room · 5 open sky</div>
-      <div class="scale-desc" id="bodhi-desc">tap a number</div>
+      <div class="scale-desc" id="bodhi-desc"'></div>
     </div>
 
   </div>
@@ -518,7 +518,7 @@ function resetForm() {
   vals = { stab:0, dev:0, bodhi:0 };
   ['stab','dev','bodhi'].forEach(function(k){
     document.querySelectorAll('#'+k+'-row .scale-btn').forEach(function(b){ b.classList.remove('on'); });
-    document.getElementById(k+'-desc').innerHTML = 'tap a number';
+    document.getElementById(k+'-desc').innerHTML = '';
   });
   document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
   document.querySelector('.chip').classList.add('on');
