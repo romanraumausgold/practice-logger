@@ -22,22 +22,19 @@
   --text-muted: rgba(232,228,220,0.25);
   --alive: #8fb89a;
   --alive-bg: rgba(143,184,154,0.12);
-  --dull-bg: rgba(232,228,220,0.06);
-  --dull: rgba(232,228,220,0.3);
   --radius: 10px;
   --font-body: 'EB Garamond', Georgia, serif;
   --font-mono: 'DM Mono', monospace;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 17px; }
-body { overflow-x: hidden; }
 
 .screen { display: none; min-height: 100vh; flex-direction: column; }
 .screen.active { display: flex; }
 
 .header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 56px 20px 16px;
+  padding: 52px 20px 14px;
   border-bottom: 0.5px solid var(--border);
   flex-shrink: 0;
 }
@@ -46,9 +43,14 @@ body { overflow-x: hidden; }
 
 .form-body { flex: 1; padding: 0 20px 40px; overflow-y: auto; }
 
-.field { margin-top: 28px; }
-.field-label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 10px; display: block; }
+.field { margin-top: 26px; }
+.field-label {
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-muted); font-family: var(--font-mono);
+  margin-bottom: 10px; display: block;
+}
 
+/* datetime */
 .dt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .dt-input {
   background: var(--surface); border: 0.5px solid var(--border);
@@ -59,6 +61,7 @@ body { overflow-x: hidden; }
 }
 .dt-input:focus { outline: none; border-color: var(--border-active); }
 
+/* duration */
 .dur-row { display: flex; align-items: center; gap: 10px; }
 .dur-input {
   background: var(--surface); border: 0.5px solid var(--border);
@@ -79,6 +82,7 @@ body { overflow-x: hidden; }
 }
 .dur-btn:active { border-color: var(--border-active); color: var(--gold); }
 
+/* practice type chips */
 .chips { display: flex; flex-wrap: wrap; gap: 7px; }
 .chip {
   padding: 9px 16px; border-radius: 20px;
@@ -88,47 +92,59 @@ body { overflow-x: hidden; }
 }
 .chip.on { border-color: var(--border-active); background: var(--gold-dim); color: var(--gold-text); }
 
+/* mantras */
+.mantra-row { display: flex; align-items: center; gap: 8px; }
 .mantra-input {
   background: var(--surface); border: 0.5px solid var(--border);
   border-radius: var(--radius); color: var(--text);
   font-family: var(--font-mono); font-size: 22px; font-weight: 500;
-  padding: 13px 16px; width: 100%;
+  padding: 13px 16px; flex: 1;
   -webkit-appearance: none; appearance: none; text-align: right;
 }
 .mantra-input:focus { outline: none; border-color: var(--border-active); }
-.mantra-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.mantra-controls { display: flex; gap: 7px; margin-top: 8px; align-items: center; }
 .mantra-preset {
-  padding: 6px 12px; border-radius: 14px;
+  padding: 8px 16px; border-radius: 14px;
   border: 0.5px solid var(--border); background: transparent;
-  color: var(--text-dim); font-family: var(--font-mono); font-size: 12px;
+  color: var(--text-dim); font-family: var(--font-mono); font-size: 13px;
   cursor: pointer; transition: all .12s;
 }
 .mantra-preset:active { border-color: var(--border-active); color: var(--gold); }
+.mantra-sep { flex: 1; }
+.mantra-adj {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 0.5px solid var(--border); background: var(--surface);
+  color: var(--text-dim); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); transition: border-color .1s, color .1s;
+}
+.mantra-adj:active { border-color: var(--border-active); color: var(--gold); }
+.mantra-adj-label { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
 
-.divider-line { height: 0.5px; background: var(--border); margin: 24px 0 0; }
-
-.stab-row { display: flex; gap: 8px; }
-.stab-btn {
+/* quality scale — shared by stability, devotion, bodhichitta */
+.scale-row { display: flex; gap: 6px; }
+.scale-btn {
   flex: 1; height: 52px; border-radius: var(--radius);
   border: 0.5px solid var(--border); background: var(--surface);
   color: var(--text-dim); font-size: 20px; font-weight: 500;
   font-family: var(--font-mono); cursor: pointer; transition: all .12s;
+  display: flex; align-items: center; justify-content: center;
 }
-.stab-btn.on { border-color: var(--border-active); background: var(--gold-dim); color: var(--gold-text); }
-.stab-hint { font-size: 12px; color: var(--text-muted); margin-top: 7px; min-height: 16px; font-family: var(--font-mono); }
+.scale-btn.on { border-color: var(--border-active); background: var(--gold-dim); color: var(--gold-text); }
 
-.conn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.conn-btn {
-  height: 60px; border-radius: var(--radius);
-  border: 0.5px solid var(--border); background: var(--surface);
-  font-family: var(--font-body); font-size: 18px; cursor: pointer; transition: all .12s;
-  color: var(--text-dim);
+.scale-desc {
+  margin-top: 10px; min-height: 36px;
+  font-size: 14px; color: var(--text-dim); font-family: var(--font-body);
+  font-style: italic; line-height: 1.45;
+  transition: opacity .15s;
 }
-.conn-btn.on-alive { border-color: var(--alive); background: var(--alive-bg); color: var(--alive); }
-.conn-btn.on-dull { border-color: rgba(232,228,220,0.2); background: var(--dull-bg); color: var(--dull); }
+.scale-desc strong { font-style: normal; font-weight: 500; color: var(--text); }
 
+.divider-line { height: 0.5px; background: var(--border); margin: 26px 0 0; }
+
+/* save */
 .save-btn {
-  margin: 32px 20px 0; width: calc(100% - 40px);
+  margin: 28px 20px 0; width: calc(100% - 40px);
   padding: 16px; border-radius: var(--radius);
   border: 0.5px solid var(--border-active);
   background: var(--gold-dim); color: var(--gold-text);
@@ -144,23 +160,14 @@ body { overflow-x: hidden; }
   animation: spin .7s linear infinite; display: none;
 }
 .save-btn.saving .spinner { display: block; }
-.save-feedback { text-align: center; font-size: 13px; color: var(--text-muted); margin: 10px 20px 0; font-family: var(--font-mono); min-height: 18px; }
-.sync-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11px; font-family: var(--font-mono);
-  padding: 3px 9px; border-radius: 8px; margin-top: 6px;
-}
-.sync-ok { background: var(--alive-bg); color: var(--alive); }
-.sync-fail { background: rgba(220,80,80,0.12); color: #e07070; }
-.sync-local { background: var(--gold-dim); color: var(--gold-text); }
-
 @keyframes spin { to { transform: rotate(360deg); } }
+.save-feedback { text-align: center; font-size: 13px; color: var(--text-muted); margin: 10px 20px 0; font-family: var(--font-mono); min-height: 18px; }
 
+/* history */
 .stats-bar {
   display: grid; grid-template-columns: 1fr 1fr 1fr;
   border-top: 0.5px solid var(--border);
-  border-bottom: 0.5px solid var(--border);
-  flex-shrink: 0;
+  border-bottom: 0.5px solid var(--border); flex-shrink: 0;
 }
 .stat { padding: 14px 10px; text-align: center; }
 .stat-val { font-family: var(--font-mono); font-size: 17px; font-weight: 500; color: var(--gold-text); }
@@ -172,29 +179,32 @@ body { overflow-x: hidden; }
 .hist-time { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); width: 40px; flex-shrink: 0; padding-top: 2px; }
 .hist-main { flex: 1; }
 .hist-type { font-size: 16px; color: var(--text); }
-.hist-meta { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; align-items: center; }
+.hist-meta { display: flex; gap: 7px; margin-top: 5px; flex-wrap: wrap; align-items: center; }
 .hist-dur { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
 .hist-mantras { font-family: var(--font-mono); font-size: 12px; color: var(--gold); }
-.hist-stab { font-family: var(--font-mono); font-size: 11px; padding: 2px 7px; border-radius: 8px; background: var(--gold-dim); color: var(--gold-text); }
-.hist-alive { font-size: 11px; padding: 2px 7px; border-radius: 8px; background: var(--alive-bg); color: var(--alive); font-family: var(--font-mono); }
-.hist-dull { font-size: 11px; padding: 2px 7px; border-radius: 8px; background: var(--dull-bg); color: var(--dull); font-family: var(--font-mono); }
-.hist-sync { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
+.badge {
+  font-size: 11px; padding: 2px 8px; border-radius: 8px;
+  font-family: var(--font-mono);
+}
+.badge-stab  { background: rgba(100,140,200,0.12); color: #8ab0d8; }
+.badge-dev   { background: rgba(220,120,60,0.12);  color: #d4906a; }
+.badge-bodhi { background: var(--alive-bg); color: var(--alive); }
+.badge-sync  { background: transparent; color: var(--text-muted); }
 
 .empty-state { padding: 60px 20px; text-align: center; color: var(--text-muted); font-size: 15px; }
 
+/* setup banner */
 .setup-banner {
-  margin: 20px; padding: 14px 16px;
+  margin: 20px 0 0; padding: 14px 16px;
   border: 0.5px solid var(--border-active);
   border-radius: var(--radius); background: var(--gold-dim);
 }
 .setup-banner p { font-size: 13px; color: var(--gold-text); line-height: 1.6; font-family: var(--font-mono); }
-.setup-banner a { color: var(--gold); }
 .setup-input {
   width: 100%; margin-top: 10px;
   background: var(--surface); border: 0.5px solid var(--border);
   border-radius: 6px; color: var(--text);
-  font-family: var(--font-mono); font-size: 12px;
-  padding: 10px 12px;
+  font-family: var(--font-mono); font-size: 12px; padding: 10px 12px;
 }
 .setup-input:focus { outline: none; border-color: var(--border-active); }
 .setup-save-btn {
@@ -218,6 +228,7 @@ body { overflow-x: hidden; }
 
     <div id="setup-area"></div>
 
+    <!-- Date & Time -->
     <div class="field">
       <span class="field-label">Date &amp; time</span>
       <div class="dt-row">
@@ -226,6 +237,7 @@ body { overflow-x: hidden; }
       </div>
     </div>
 
+    <!-- Duration -->
     <div class="field">
       <span class="field-label">Duration</span>
       <div class="dur-row">
@@ -238,50 +250,75 @@ body { overflow-x: hidden; }
       </div>
     </div>
 
+    <!-- Practice type -->
     <div class="field">
       <span class="field-label">Practice type</span>
-      <div class="chips" id="type-chips">
-        <div class="chip on" onclick="setType(this)">Daily practice</div>
-        <div class="chip" onclick="setType(this)">Ritual</div>
-        <div class="chip" onclick="setType(this)">Prayer</div>
-        <div class="chip" onclick="setType(this)">Teaching</div>
-        <div class="chip" onclick="setType(this)">Reading</div>
+      <div class="chips">
+        <div class="chip on"  onclick="setType(this)">Daily practice</div>
+        <div class="chip"     onclick="setType(this)">Ritual</div>
+        <div class="chip"     onclick="setType(this)">Prayer</div>
+        <div class="chip"     onclick="setType(this)">Study</div>
       </div>
     </div>
 
+    <!-- Mantras -->
     <div class="field" id="mantra-field">
       <span class="field-label">Mantras accumulated</span>
       <input class="mantra-input" type="number" id="inp-mantras" placeholder="0" min="0">
-      <div class="mantra-presets">
+      <div class="mantra-controls">
         <button class="mantra-preset" onclick="setMantras(3000)">3k</button>
-        <button class="mantra-preset" onclick="setMantras(5000)">5k</button>
-        <button class="mantra-preset" onclick="setMantras(7000)">7k</button>
-        <button class="mantra-preset" onclick="setMantras(9000)">9k</button>
-        <button class="mantra-preset" onclick="setMantras(11000)">11k</button>
-        <button class="mantra-preset" onclick="setMantras(15000)">15k</button>
+        <button class="mantra-preset" onclick="setMantras(10000)">10k</button>
+        <span class="mantra-sep"></span>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <button class="mantra-adj" onclick="adjMantras(-1000)">−</button>
+          <span class="mantra-adj-label">1k</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <button class="mantra-adj" onclick="adjMantras(1000)">+</button>
+          <span class="mantra-adj-label">1k</span>
+        </div>
       </div>
     </div>
 
     <div class="divider-line"></div>
 
+    <!-- Stability -->
     <div class="field">
-      <span class="field-label">Stability</span>
-      <div class="stab-row" id="stab-row">
-        <button class="stab-btn" data-v="1" onclick="setStab(1)">1</button>
-        <button class="stab-btn" data-v="2" onclick="setStab(2)">2</button>
-        <button class="stab-btn" data-v="3" onclick="setStab(3)">3</button>
-        <button class="stab-btn" data-v="4" onclick="setStab(4)">4</button>
-        <button class="stab-btn" data-v="5" onclick="setStab(5)">5</button>
+      <span class="field-label">Stability — water</span>
+      <div class="scale-row" id="stab-row">
+        <button class="scale-btn" data-v="1" onclick="setScale('stab',1)">1</button>
+        <button class="scale-btn" data-v="2" onclick="setScale('stab',2)">2</button>
+        <button class="scale-btn" data-v="3" onclick="setScale('stab',3)">3</button>
+        <button class="scale-btn" data-v="4" onclick="setScale('stab',4)">4</button>
+        <button class="scale-btn" data-v="5" onclick="setScale('stab',5)">5</button>
       </div>
-      <div class="stab-hint" id="stab-hint">1 coarse · 2 medium · 3 subtle · 4 stable · 5 effortless</div>
+      <div class="scale-desc" id="stab-desc">tap a number</div>
     </div>
 
+    <!-- Devotion -->
     <div class="field">
-      <span class="field-label">Connection</span>
-      <div class="conn-row">
-        <button class="conn-btn" id="btn-alive" onclick="setConn('alive')">Alive</button>
-        <button class="conn-btn" id="btn-dull" onclick="setConn('dull')">Dull</button>
+      <span class="field-label">Devotion — fire</span>
+      <div class="scale-row" id="dev-row">
+        <button class="scale-btn" data-v="1" onclick="setScale('dev',1)">1</button>
+        <button class="scale-btn" data-v="2" onclick="setScale('dev',2)">2</button>
+        <button class="scale-btn" data-v="3" onclick="setScale('dev',3)">3</button>
+        <button class="scale-btn" data-v="4" onclick="setScale('dev',4)">4</button>
+        <button class="scale-btn" data-v="5" onclick="setScale('dev',5)">5</button>
       </div>
+      <div class="scale-desc" id="dev-desc">tap a number</div>
+    </div>
+
+    <!-- Bodhichitta -->
+    <div class="field">
+      <span class="field-label">Bodhichitta — light</span>
+      <div class="scale-row" id="bodhi-row">
+        <button class="scale-btn" data-v="1" onclick="setScale('bodhi',1)">1</button>
+        <button class="scale-btn" data-v="2" onclick="setScale('bodhi',2)">2</button>
+        <button class="scale-btn" data-v="3" onclick="setScale('bodhi',3)">3</button>
+        <button class="scale-btn" data-v="4" onclick="setScale('bodhi',4)">4</button>
+        <button class="scale-btn" data-v="5" onclick="setScale('bodhi',5)">5</button>
+      </div>
+      <div class="scale-desc" id="bodhi-desc">tap a number</div>
     </div>
 
   </div>
@@ -291,7 +328,7 @@ body { overflow-x: hidden; }
     <span id="save-label">Save session</span>
   </button>
   <div class="save-feedback" id="save-fb"></div>
-  <div style="height:24px"></div>
+  <div style="height:28px"></div>
 </div>
 
 <!-- HISTORY SCREEN -->
@@ -302,27 +339,44 @@ body { overflow-x: hidden; }
   </div>
   <div class="stats-bar">
     <div class="stat"><div class="stat-val" id="stat-total">0</div><div class="stat-label">today</div></div>
-    <div class="stat"><div class="stat-val" id="stat-mantras">0</div><div class="stat-label">mantras</div></div>
+    <div class="stat"><div class="stat-val" id="stat-mantras">—</div><div class="stat-label">mantras</div></div>
     <div class="stat"><div class="stat-val" id="stat-stab">—</div><div class="stat-label">avg stab</div></div>
   </div>
   <div class="hist-body" id="hist-body"></div>
 </div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────
-var SHEET_URL = localStorage.getItem('sheet_url') || '';
-
-// ── STATE ───────────────────────────────────────────────
-var stab = 0, conn = '', practiceType = 'Daily practice';
-var stabHints = {
-  1:'fully away — coarse excitation',
-  2:'object at periphery — medium',
-  3:'present but subtle imbalance',
-  4:'stable — minor effort only',
-  5:'effortless'
+// ── DESCRIPTORS ─────────────────────────────────────────
+var DESC = {
+  stab: {
+    1: '<strong>Stormy sea</strong> — mind fully tossed; thoughts and turbulence dominate; the object is lost',
+    2: '<strong>Rippled lake</strong> — the object is there but the surface is restless; excitation or dullness keeps breaking through',
+    3: '<strong>Settling water</strong> — movement is lighter; subtle disturbances; the object held with some effort',
+    4: '<strong>Still lake</strong> — calm and clear for most of the session; minor ripples but the surface holds',
+    5: '<strong>Mirror</strong> — effortless stillness; the object reflected without distortion; no effort needed to remain'
+  },
+  dev: {
+    1: '<strong>Cold ash</strong> — no warmth; just going through the motions',
+    2: '<strong>Ember</strong> — a faint glow, easily lost; warmth flickers briefly then fades',
+    3: '<strong>Small flame</strong> — a real flame, tender but genuine; comes and goes but burns true when present',
+    4: '<strong>Steady flame</strong> — burns consistently through the session; warm, present, not easily disturbed',
+    5: '<strong>Open fire</strong> — strong and self-sustaining; the Guru is near; the practice has heat and pull'
+  },
+  bodhi: {
+    1: '<strong>Dark</strong> — no light; practice felt closed or self-contained',
+    2: '<strong>Candle</strong> — a small point of light; intention is there at the edges but doesn\'t illuminate the session',
+    3: '<strong>Lamp</strong> — genuine light in the room; warmth and openness colour moments of the session',
+    4: '<strong>Bright room</strong> — the whole session is lit; care and openness feel like the natural atmosphere',
+    5: '<strong>Open sky</strong> — boundless, directionless light; dedication to all beings is the flavour of the whole session'
+  }
 };
 
-// ── INIT ────────────────────────────────────────────────
+// ── STATE ────────────────────────────────────────────────
+var vals = { stab: 0, dev: 0, bodhi: 0 };
+var practiceType = 'Daily practice';
+var SHEET_URL = localStorage.getItem('sheet_url') || '';
+
+// ── INIT ─────────────────────────────────────────────────
 function init() {
   initDateTime();
   renderSetupArea();
@@ -337,11 +391,8 @@ function initDateTime() {
 
 function renderSetupArea() {
   var area = document.getElementById('setup-area');
-  if (SHEET_URL) {
-    area.innerHTML = '';
-    return;
-  }
-  area.innerHTML = '<div class="setup-banner"><p>Paste your Apps Script URL below to enable Google Sheets sync. See setup instructions.</p><input class="setup-input" id="url-inp" placeholder="https://script.google.com/macros/s/..." /><button class="setup-save-btn" onclick="saveSheetUrl()">Save URL</button></div>';
+  if (SHEET_URL) { area.innerHTML = ''; return; }
+  area.innerHTML = '<div class="setup-banner"><p>Paste your Apps Script URL to enable Google Sheets sync.</p><input class="setup-input" id="url-inp" placeholder="https://script.google.com/macros/s/..."/><button class="setup-save-btn" onclick="saveSheetUrl()">Save URL</button></div>';
 }
 
 function saveSheetUrl() {
@@ -350,10 +401,9 @@ function saveSheetUrl() {
   SHEET_URL = v;
   localStorage.setItem('sheet_url', v);
   renderSetupArea();
-  showFeedback('Sheet URL saved');
 }
 
-// ── FORM CONTROLS ────────────────────────────────────────
+// ── CONTROLS ─────────────────────────────────────────────
 function adjDur(d) {
   var el = document.getElementById('inp-dur');
   el.value = Math.max(1, Math.min(600, (parseInt(el.value)||0) + d));
@@ -368,16 +418,17 @@ function setType(el) {
 
 function setMantras(v) { document.getElementById('inp-mantras').value = v; }
 
-function setStab(v) {
-  stab = v;
-  document.querySelectorAll('.stab-btn').forEach(function(b){ b.classList.toggle('on', +b.dataset.v === v); });
-  document.getElementById('stab-hint').textContent = stabHints[v];
+function adjMantras(d) {
+  var el = document.getElementById('inp-mantras');
+  el.value = Math.max(0, (parseInt(el.value)||0) + d);
 }
 
-function setConn(c) {
-  conn = c;
-  document.getElementById('btn-alive').className = 'conn-btn' + (c==='alive' ? ' on-alive' : '');
-  document.getElementById('btn-dull').className  = 'conn-btn' + (c==='dull'  ? ' on-dull'  : '');
+function setScale(key, v) {
+  vals[key] = v;
+  document.querySelectorAll('#'+key+'-row .scale-btn').forEach(function(b){
+    b.classList.toggle('on', +b.dataset.v === v);
+  });
+  document.getElementById(key+'-desc').innerHTML = DESC[key][v];
 }
 
 // ── SAVE ─────────────────────────────────────────────────
@@ -386,30 +437,24 @@ function saveSession() {
   var time    = document.getElementById('inp-time').value;
   var dur     = parseInt(document.getElementById('inp-dur').value) || 0;
   var mantras = parseInt(document.getElementById('inp-mantras').value) || 0;
-
   if (!date || !dur) { showFeedback('add date and duration'); return; }
 
   var entry = {
-    id: Date.now(),
-    date: date, time: time,
-    dur: dur, type: practiceType,
-    mantras: mantras, stab: stab, conn: conn,
+    id: Date.now(), date: date, time: time, dur: dur,
+    type: practiceType, mantras: mantras,
+    stab: vals.stab, dev: vals.dev, bodhi: vals.bodhi,
     synced: false
   };
 
   saveLocal(entry);
-  showFeedback('saved locally');
+  showFeedback('saved');
   setSaving(true);
 
   if (SHEET_URL) {
     sendToSheet(entry, function(ok) {
       setSaving(false);
-      if (ok) {
-        markSynced(entry.id);
-        showFeedback('synced to Sheet');
-      } else {
-        showFeedback('saved — sync failed, will retry');
-      }
+      if (ok) { markSynced(entry.id); showFeedback('synced ↑'); }
+      else { showFeedback('saved — sync failed'); }
       setTimeout(function(){ resetForm(); }, 1400);
     });
   } else {
@@ -426,49 +471,36 @@ function sendToSheet(entry, cb) {
     'type='    + encodeURIComponent(entry.type),
     'mantras=' + entry.mantras,
     'stab='    + entry.stab,
-    'conn='    + encodeURIComponent(entry.conn)
+    'dev='     + entry.dev,
+    'bodhi='   + entry.bodhi
   ].join('&');
 
-  var url = SHEET_URL + '?' + params;
-
-  var img = new Image();
-  var done = false;
-  var timeout = setTimeout(function(){
-    if (!done) { done = true; cb(false); }
-  }, 8000);
-
-  img.onload = img.onerror = function(e) {
-    if (!done) {
-      done = true;
-      clearTimeout(timeout);
-      cb(e.type === 'load');
-    }
+  var img = new Image(), done = false;
+  var t = setTimeout(function(){ if(!done){done=true;cb(false);} }, 8000);
+  img.onload = img.onerror = function(e){
+    if(!done){ done=true; clearTimeout(t); cb(e.type==='load'); }
   };
-  img.src = url;
+  img.src = SHEET_URL + '?' + params;
 }
 
 function setSaving(on) {
-  var btn = document.getElementById('save-btn');
-  btn.classList.toggle('saving', on);
+  document.getElementById('save-btn').classList.toggle('saving', on);
   document.getElementById('spinner').style.display = on ? 'block' : 'none';
   document.getElementById('save-label').textContent = on ? 'Syncing...' : 'Save session';
 }
 
 // ── LOCAL STORAGE ────────────────────────────────────────
 function loadAll() {
-  try { return JSON.parse(localStorage.getItem('prac_log') || '[]'); } catch(e) { return []; }
+  try { return JSON.parse(localStorage.getItem('prac_log')||'[]'); } catch(e){ return []; }
 }
-
 function saveLocal(entry) {
-  var data = loadAll();
-  data.unshift(entry);
-  try { localStorage.setItem('prac_log', JSON.stringify(data)); } catch(e) {}
+  var d = loadAll(); d.unshift(entry);
+  try { localStorage.setItem('prac_log', JSON.stringify(d)); } catch(e){}
 }
-
 function markSynced(id) {
-  var data = loadAll();
-  data.forEach(function(e){ if (e.id === id) e.synced = true; });
-  try { localStorage.setItem('prac_log', JSON.stringify(data)); } catch(e) {}
+  var d = loadAll();
+  d.forEach(function(e){ if(e.id===id) e.synced=true; });
+  try { localStorage.setItem('prac_log', JSON.stringify(d)); } catch(e){}
 }
 
 // ── RESET ────────────────────────────────────────────────
@@ -476,11 +508,11 @@ function resetForm() {
   initDateTime();
   document.getElementById('inp-dur').value = '';
   document.getElementById('inp-mantras').value = '';
-  stab = 0; conn = '';
-  document.querySelectorAll('.stab-btn').forEach(function(b){ b.classList.remove('on'); });
-  document.getElementById('stab-hint').textContent = '1 coarse · 2 medium · 3 subtle · 4 stable · 5 effortless';
-  document.getElementById('btn-alive').className = 'conn-btn';
-  document.getElementById('btn-dull').className  = 'conn-btn';
+  vals = { stab:0, dev:0, bodhi:0 };
+  ['stab','dev','bodhi'].forEach(function(k){
+    document.querySelectorAll('#'+k+'-row .scale-btn').forEach(function(b){ b.classList.remove('on'); });
+    document.getElementById(k+'-desc').innerHTML = 'tap a number';
+  });
   document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
   document.querySelector('.chip').classList.add('on');
   practiceType = 'Daily practice';
@@ -496,7 +528,6 @@ function showHistory() {
   document.getElementById('screen-hist').classList.add('active');
   renderHistory();
 }
-
 function showLog() {
   document.getElementById('screen-hist').classList.remove('active');
   document.getElementById('screen-log').classList.add('active');
@@ -509,23 +540,22 @@ function renderHistory() {
   updateStats(data);
 
   var grouped = {};
-  data.forEach(function(e){ if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
+  data.forEach(function(e){ if(!grouped[e.date]) grouped[e.date]=[]; grouped[e.date].push(e); });
 
   var today = new Date().toISOString().slice(0,10);
   var html = '';
-  Object.keys(grouped).sort().reverse().forEach(function(date) {
-    var label = date === today ? 'Today' : formatDate(date);
-    html += '<div class="hist-day-label">' + label + '</div>';
-    grouped[date].forEach(function(e) {
-      html += '<div class="hist-entry">';
-      html += '<div class="hist-time">' + (e.time||'') + '</div>';
-      html += '<div class="hist-main"><div class="hist-type">' + e.type + '</div>';
+  Object.keys(grouped).sort().reverse().forEach(function(date){
+    html += '<div class="hist-day-label">' + (date===today?'Today':formatDate(date)) + '</div>';
+    grouped[date].forEach(function(e){
+      html += '<div class="hist-entry"><div class="hist-time">'+(e.time||'')+'</div>';
+      html += '<div class="hist-main"><div class="hist-type">'+e.type+'</div>';
       html += '<div class="hist-meta">';
-      html += '<span class="hist-dur">' + e.dur + 'min</span>';
-      if (e.mantras) html += '<span class="hist-mantras">' + e.mantras.toLocaleString() + '</span>';
-      if (e.stab)    html += '<span class="hist-stab">s' + e.stab + '</span>';
-      if (e.conn)    html += '<span class="hist-' + e.conn + '">' + e.conn + '</span>';
-      if (SHEET_URL) html += '<span class="hist-sync">' + (e.synced ? '↑' : '○') + '</span>';
+      html += '<span class="hist-dur">'+e.dur+'min</span>';
+      if (e.mantras) html += '<span class="hist-mantras">'+e.mantras.toLocaleString()+'</span>';
+      if (e.stab)  html += '<span class="badge badge-stab">~'+e.stab+'</span>';
+      if (e.dev)   html += '<span class="badge badge-dev">🔥'+e.dev+'</span>';
+      if (e.bodhi) html += '<span class="badge badge-bodhi">☀'+e.bodhi+'</span>';
+      if (SHEET_URL) html += '<span class="badge badge-sync">'+(e.synced?'↑':'○')+'</span>';
       html += '</div></div></div>';
     });
   });
@@ -534,19 +564,19 @@ function renderHistory() {
 
 function updateStats(data) {
   var today = new Date().toISOString().slice(0,10);
-  var td = data.filter(function(e){ return e.date === today; });
-  var tm = td.reduce(function(s,e){ return s+(e.mantras||0); }, 0);
+  var td = data.filter(function(e){ return e.date===today; });
+  var tm = td.reduce(function(s,e){ return s+(e.mantras||0); },0);
   var se = data.filter(function(e){ return e.stab; }).slice(0,20);
   var as = se.length ? (se.reduce(function(s,e){ return s+e.stab; },0)/se.length).toFixed(1) : '—';
   document.getElementById('stat-total').textContent   = td.length;
-  document.getElementById('stat-mantras').textContent = tm ? tm.toLocaleString() : '0';
+  document.getElementById('stat-mantras').textContent = tm ? tm.toLocaleString() : '—';
   document.getElementById('stat-stab').textContent    = as;
 }
 
 function formatDate(d) {
   var p = d.split('-');
   var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return parseInt(p[2]) + ' ' + m[parseInt(p[1])-1];
+  return parseInt(p[2])+' '+m[parseInt(p[1])-1];
 }
 
 init();
