@@ -132,6 +132,10 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 }
 .scale-btn.on { border-color: var(--border-active); background: var(--gold-dim); color: var(--gold-text); }
 
+.scale-legend {
+  font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);
+  margin-top: 8px; line-height: 1.5; letter-spacing: .01em;
+}
 .scale-desc {
   margin-top: 10px; min-height: 36px;
   font-size: 14px; color: var(--text-dim); font-family: var(--font-body);
@@ -254,7 +258,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     <div class="field">
       <span class="field-label">Practice type</span>
       <div class="chips">
-        <div class="chip on"  onclick="setType(this)">Daily practice</div>
+        <div class="chip on"  onclick="setType(this)">Daily Practice</div>
         <div class="chip"     onclick="setType(this)">Ritual</div>
         <div class="chip"     onclick="setType(this)">Prayer</div>
         <div class="chip"     onclick="setType(this)">Study</div>
@@ -292,6 +296,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
         <button class="scale-btn" data-v="4" onclick="setScale('stab',4)">4</button>
         <button class="scale-btn" data-v="5" onclick="setScale('stab',5)">5</button>
       </div>
+      <div class="scale-legend">1 stormy sea · 2 rippled lake · 3 settling water · 4 still lake · 5 mirror</div>
       <div class="scale-desc" id="stab-desc">tap a number</div>
     </div>
 
@@ -305,6 +310,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
         <button class="scale-btn" data-v="4" onclick="setScale('dev',4)">4</button>
         <button class="scale-btn" data-v="5" onclick="setScale('dev',5)">5</button>
       </div>
+      <div class="scale-legend">1 cold ash · 2 ember · 3 small flame · 4 steady flame · 5 open fire</div>
       <div class="scale-desc" id="dev-desc">tap a number</div>
     </div>
 
@@ -318,6 +324,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
         <button class="scale-btn" data-v="4" onclick="setScale('bodhi',4)">4</button>
         <button class="scale-btn" data-v="5" onclick="setScale('bodhi',5)">5</button>
       </div>
+      <div class="scale-legend">1 dark · 2 candle · 3 lamp · 4 bright room · 5 open sky</div>
       <div class="scale-desc" id="bodhi-desc">tap a number</div>
     </div>
 
@@ -373,7 +380,7 @@ var DESC = {
 
 // ── STATE ────────────────────────────────────────────────
 var vals = { stab: 0, dev: 0, bodhi: 0 };
-var practiceType = 'Daily practice';
+var practiceType = 'Daily Practice';
 var SHEET_URL = localStorage.getItem('sheet_url') || '';
 
 // ── INIT ─────────────────────────────────────────────────
@@ -413,7 +420,7 @@ function setType(el) {
   document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
   el.classList.add('on');
   practiceType = el.textContent.trim();
-  document.getElementById('mantra-field').style.opacity = practiceType === 'Daily practice' ? '1' : '0.5';
+  document.getElementById('mantra-field').style.opacity = practiceType === 'Daily Practice' ? '1' : '0.5';
 }
 
 function setMantras(v) { document.getElementById('inp-mantras').value = v; }
@@ -515,7 +522,7 @@ function resetForm() {
   });
   document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
   document.querySelector('.chip').classList.add('on');
-  practiceType = 'Daily practice';
+  practiceType = 'Daily Practice';
   document.getElementById('mantra-field').style.opacity = '1';
   document.getElementById('save-fb').textContent = '';
 }
