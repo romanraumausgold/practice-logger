@@ -344,10 +344,9 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     <span class="header-title">Sessions</span>
     <span class="header-action" onclick="showLog()">+ Log</span>
   </div>
-  <div class="stats-bar">
-    <div class="stat"><div class="stat-val" id="stat-total">0</div><div class="stat-label">today</div></div>
-    <div class="stat"><div class="stat-val" id="stat-mantras">—</div><div class="stat-label">mantras</div></div>
-    <div class="stat"><div class="stat-val" id="stat-stab">—</div><div class="stat-label">avg stab</div></div>
+  <div class="stats-bar" style="grid-template-columns:1fr 1fr">
+    <div class="stat"><div class="stat-val" id="stat-total">0</div><div class="stat-label">sessions today</div></div>
+    <div class="stat"><div class="stat-val" id="stat-mantras">—</div><div class="stat-label">mantras today</div></div>
   </div>
   <div class="hist-body" id="hist-body"></div>
 </div>
@@ -482,12 +481,9 @@ function sendToSheet(entry, cb) {
     'bodhi='   + entry.bodhi
   ].join('&');
 
-  var img = new Image(), done = false;
-  var t = setTimeout(function(){ if(!done){done=true;cb(false);} }, 8000);
-  img.onload = img.onerror = function(e){
-    if(!done){ done=true; clearTimeout(t); cb(e.type==='load'); }
-  };
-  img.src = SHEET_URL + '?' + params;
+  fetch(SHEET_URL + '?' + params, { method: 'GET', mode: 'no-cors' })
+    .then(function(){ cb(true); })
+    .catch(function(){ cb(false); });
 }
 
 function setSaving(on) {
@@ -541,43 +537,47 @@ function showLog() {
 }
 
 function renderHistory() {
-  var data = loadAll();
-  var body = document.getElementById('hist-body');
-  if (!data.length) { body.innerHTML = '<div class="empty-state">No sessions yet</div>'; updateStats(data); return; }
-  updateStats(data);
-
-  var grouped = {};
-  data.forEach(function(e){ if(!grouped[e.date]) grouped[e.date]=[]; grouped[e.date].push(e); });
-
+  var all  = loadAll();
   var today = new Date().toISOString().slice(0,10);
+  var data = all.filter(function(e){ return e.date === today; });
+  var body = document.getElementById('hist-body');
+  updateStats(all);
+
+  if (!data.length) {
+    body.innerHTML = '<div class="empty-state">No sessions today</div>'
+      + '<div style="text-align:center;margin-top:12px"><button onclick="clearAll()" style="background:none;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;cursor:pointer;text-decoration:underline">clear all test entries</button></div>';
+    return;
+  }
+
   var html = '';
-  Object.keys(grouped).sort().reverse().forEach(function(date){
-    html += '<div class="hist-day-label">' + (date===today?'Today':formatDate(date)) + '</div>';
-    grouped[date].forEach(function(e){
-      html += '<div class="hist-entry"><div class="hist-time">'+(e.time||'')+'</div>';
-      html += '<div class="hist-main"><div class="hist-type">'+e.type+'</div>';
-      html += '<div class="hist-meta">';
-      html += '<span class="hist-dur">'+e.dur+'min</span>';
-      if (e.mantras) html += '<span class="hist-mantras">'+e.mantras.toLocaleString()+'</span>';
-      if (e.stab)  html += '<span class="badge badge-stab">~'+e.stab+'</span>';
-      if (e.dev)   html += '<span class="badge badge-dev">🔥'+e.dev+'</span>';
-      if (e.bodhi) html += '<span class="badge badge-bodhi">☀'+e.bodhi+'</span>';
-      if (SHEET_URL) html += '<span class="badge badge-sync">'+(e.synced?'↑':'○')+'</span>';
-      html += '</div></div></div>';
-    });
+  data.forEach(function(e){
+    html += '<div class="hist-entry"><div class="hist-time">'+(e.time||'')+'</div>';
+    html += '<div class="hist-main"><div class="hist-type">'+e.type+'</div>';
+    html += '<div class="hist-meta">';
+    html += '<span class="hist-dur">'+e.dur+'min</span>';
+    if (e.mantras) html += '<span class="hist-mantras">'+e.mantras.toLocaleString()+'</span>';
+    if (e.stab)  html += '<span class="badge badge-stab">~'+e.stab+'</span>';
+    if (e.dev)   html += '<span class="badge badge-dev">🔥'+e.dev+'</span>';
+    if (e.bodhi) html += '<span class="badge badge-bodhi">☀'+e.bodhi+'</span>';
+    if (SHEET_URL) html += '<span class="badge badge-sync">'+(e.synced?'↑':'○')+'</span>';
+    html += '</div></div></div>';
   });
   body.innerHTML = html;
+}
+
+function clearAll() {
+  if (confirm('Clear all local entries?')) {
+    localStorage.removeItem('prac_log');
+    renderHistory();
+  }
 }
 
 function updateStats(data) {
   var today = new Date().toISOString().slice(0,10);
   var td = data.filter(function(e){ return e.date===today; });
   var tm = td.reduce(function(s,e){ return s+(e.mantras||0); },0);
-  var se = data.filter(function(e){ return e.stab; }).slice(0,20);
-  var as = se.length ? (se.reduce(function(s,e){ return s+e.stab; },0)/se.length).toFixed(1) : '—';
   document.getElementById('stat-total').textContent   = td.length;
   document.getElementById('stat-mantras').textContent = tm ? tm.toLocaleString() : '—';
-  document.getElementById('stat-stab').textContent    = as;
 }
 
 function formatDate(d) {
@@ -588,5 +588,5 @@ function formatDate(d) {
 
 init();
 </script>
+
 </body>
-</html>
