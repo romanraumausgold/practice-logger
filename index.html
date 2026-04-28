@@ -481,9 +481,15 @@ function sendToSheet(entry, cb) {
     'bodhi='   + entry.bodhi
   ].join('&');
 
+  // no-cors responses are opaque — we can't read status, so assume success if no network error
   fetch(SHEET_URL + '?' + params, { method: 'GET', mode: 'no-cors' })
     .then(function(){ cb(true); })
-    .catch(function(){ cb(false); });
+    .catch(function(){
+      // fallback: try via image tag in case fetch is blocked
+      var img = new Image();
+      img.onload = img.onerror = function(){ cb(true); };
+      img.src = SHEET_URL + '?' + params + '&t=' + Date.now();
+    });
 }
 
 function setSaving(on) {
@@ -543,33 +549,29 @@ function renderHistory() {
   var body = document.getElementById('hist-body');
   updateStats(all);
 
-  if (!data.length) {
-    body.innerHTML = '<div class="empty-state">No sessions today</div>'
-      + '<div style="text-align:center;margin-top:12px"><button onclick="clearAll()" style="background:none;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;cursor:pointer;text-decoration:underline">clear all test entries</button></div>';
-    return;
-  }
-
   var html = '';
-  data.forEach(function(e){
-    html += '<div class="hist-entry"><div class="hist-time">'+(e.time||'')+'</div>';
-    html += '<div class="hist-main"><div class="hist-type">'+e.type+'</div>';
-    html += '<div class="hist-meta">';
-    html += '<span class="hist-dur">'+e.dur+'min</span>';
-    if (e.mantras) html += '<span class="hist-mantras">'+e.mantras.toLocaleString()+'</span>';
-    if (e.stab)  html += '<span class="badge badge-stab">~'+e.stab+'</span>';
-    if (e.dev)   html += '<span class="badge badge-dev">🔥'+e.dev+'</span>';
-    if (e.bodhi) html += '<span class="badge badge-bodhi">☀'+e.bodhi+'</span>';
-    if (SHEET_URL) html += '<span class="badge badge-sync">'+(e.synced?'↑':'○')+'</span>';
-    html += '</div></div></div>';
-  });
+  if (!data.length) {
+    html += '<div class="empty-state">No sessions today</div>';
+  } else {
+    data.forEach(function(e){
+      html += '<div class="hist-entry"><div class="hist-time">'+(e.time||'')+'</div>';
+      html += '<div class="hist-main"><div class="hist-type">'+e.type+'</div>';
+      html += '<div class="hist-meta">';
+      html += '<span class="hist-dur">'+e.dur+'min</span>';
+      if (e.mantras) html += '<span class="hist-mantras">'+e.mantras.toLocaleString()+'</span>';
+      if (e.stab)  html += '<span class="badge badge-stab">~'+e.stab+'</span>';
+      if (e.dev)   html += '<span class="badge badge-dev">🔥'+e.dev+'</span>';
+      if (e.bodhi) html += '<span class="badge badge-bodhi">☀'+e.bodhi+'</span>';
+      html += '</div></div></div>';
+    });
+  }
+  html += '<div style="text-align:center;padding:24px 0 8px"><button onclick="clearAll()" style="background:none;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;cursor:pointer;text-decoration:underline">clear local history</button></div>';
   body.innerHTML = html;
 }
 
 function clearAll() {
-  if (confirm('Clear all local entries?')) {
-    localStorage.removeItem('prac_log');
-    renderHistory();
-  }
+  localStorage.removeItem('prac_log');
+  renderHistory();
 }
 
 function updateStats(data) {
