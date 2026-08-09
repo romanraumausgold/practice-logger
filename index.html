@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Practice">
-<title>Practice Logger</title>
+<meta name="apple-mobile-web-app-title" content="Mantras">
+<title>Mantra Log</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -20,8 +20,6 @@
   --text: #e8e4dc;
   --text-dim: rgba(232,228,220,0.45);
   --text-muted: rgba(232,228,220,0.25);
-  --alive: #8fb89a;
-  --alive-bg: rgba(143,184,154,0.12);
   --radius: 10px;
   --font-body: 'EB Garamond', Georgia, serif;
   --font-mono: 'DM Mono', monospace;
@@ -29,130 +27,65 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 17px; }
 
-.screen { display: none; min-height: 100vh; flex-direction: column; }
-.screen.active { display: flex; }
+.screen { display: flex; min-height: 100vh; flex-direction: column; }
 
 .header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 52px 20px 14px;
+  padding: 56px 20px 14px;
   border-bottom: 0.5px solid var(--border);
   flex-shrink: 0;
 }
 .header-title { font-size: 13px; letter-spacing: .12em; color: var(--text-dim); font-family: var(--font-mono); text-transform: uppercase; }
-.header-action { font-size: 13px; color: var(--gold); font-family: var(--font-mono); cursor: pointer; padding: 6px 0 6px 12px; }
 
 .form-body { flex: 1; padding: 0 20px 40px; overflow-y: auto; }
 
-.field { margin-top: 26px; }
+.field { margin-top: 30px; }
 .field-label {
   font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
   color: var(--text-muted); font-family: var(--font-mono);
   margin-bottom: 10px; display: block;
 }
 
-/* datetime */
-.dt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .dt-input {
   background: var(--surface); border: 0.5px solid var(--border);
   border-radius: var(--radius); color: var(--text);
-  font-family: var(--font-mono); font-size: 14px;
-  padding: 13px 12px; width: 100%;
+  font-family: var(--font-mono); font-size: 16px;
+  padding: 14px 14px; width: 100%;
   -webkit-appearance: none; appearance: none; color-scheme: dark;
 }
 .dt-input:focus { outline: none; border-color: var(--border-active); }
 
-/* duration */
-.dur-row { display: flex; align-items: center; gap: 10px; }
-.dur-input {
-  background: var(--surface); border: 0.5px solid var(--border);
-  border-radius: var(--radius); color: var(--text);
-  font-family: var(--font-mono); font-size: 22px; font-weight: 500;
-  padding: 13px 16px; width: 100px; text-align: center;
-  -webkit-appearance: none; appearance: none;
-}
-.dur-input:focus { outline: none; border-color: var(--border-active); }
-.dur-unit { color: var(--text-dim); font-size: 14px; }
-.dur-btns { display: flex; gap: 6px; margin-left: auto; }
-.dur-btn {
-  width: 44px; height: 44px; border-radius: 50%;
-  border: 0.5px solid var(--border); background: var(--surface);
-  color: var(--text-dim); font-size: 20px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: border-color .1s, color .1s;
-}
-.dur-btn:active { border-color: var(--border-active); color: var(--gold); }
-
-/* practice type chips */
-.chips { display: flex; flex-wrap: wrap; gap: 7px; }
-.chip {
-  padding: 9px 16px; border-radius: 20px;
-  border: 0.5px solid var(--border); background: transparent;
-  color: var(--text-dim); font-family: var(--font-body); font-size: 15px;
-  cursor: pointer; transition: all .12s;
-}
-.chip.on { border-color: var(--border-active); background: var(--gold-dim); color: var(--gold-text); }
-
-/* mantras */
-.mantra-row { display: flex; align-items: center; gap: 8px; }
 .mantra-input {
   background: var(--surface); border: 0.5px solid var(--border);
   border-radius: var(--radius); color: var(--text);
-  font-family: var(--font-mono); font-size: 22px; font-weight: 500;
-  padding: 13px 16px; flex: 1;
-  -webkit-appearance: none; appearance: none; text-align: right;
+  font-family: var(--font-mono); font-size: 34px; font-weight: 500;
+  padding: 20px 18px; width: 100%;
+  -webkit-appearance: none; appearance: none; text-align: center;
 }
 .mantra-input:focus { outline: none; border-color: var(--border-active); }
-.mantra-controls { display: flex; gap: 7px; margin-top: 8px; align-items: center; }
+.mantra-input::placeholder { color: var(--text-muted); }
+
+.mantra-controls { display: flex; gap: 8px; margin-top: 10px; }
 .mantra-preset {
-  padding: 8px 16px; border-radius: 14px;
+  flex: 1; padding: 11px 0; border-radius: 14px;
   border: 0.5px solid var(--border); background: transparent;
-  color: var(--text-dim); font-family: var(--font-mono); font-size: 13px;
+  color: var(--text-dim); font-family: var(--font-mono); font-size: 14px;
   cursor: pointer; transition: all .12s;
 }
 .mantra-preset:active { border-color: var(--border-active); color: var(--gold); }
-.mantra-sep { flex: 1; }
 .mantra-adj {
-  width: 42px; height: 42px; border-radius: 50%;
+  width: 46px; flex-shrink: 0; border-radius: 14px;
   border: 0.5px solid var(--border); background: var(--surface);
   color: var(--text-dim); font-size: 18px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
   font-family: var(--font-mono); transition: border-color .1s, color .1s;
 }
 .mantra-adj:active { border-color: var(--border-active); color: var(--gold); }
-.mantra-adj-label { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
 
-/* quality scale — shared by stability, devotion, bodhichitta */
-.scale-row { display: flex; gap: 6px; }
-.scale-btn {
-  flex: 1; height: 52px; border-radius: var(--radius);
-  border: 0.5px solid var(--border); background: var(--surface);
-  color: var(--text-dim); font-size: 20px; font-weight: 500;
-  font-family: var(--font-mono); cursor: pointer; transition: all .12s;
-  display: flex; align-items: center; justify-content: center;
-}
-.scale-btn.on { border-color: var(--border-active); background: var(--gold-dim); color: var(--gold-text); }
-
-.scale-legend {
-  font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);
-  margin-top: 8px; line-height: 1.5; letter-spacing: .01em;
-}
-.scale-desc {
-  margin-top: 10px; min-height: 36px;
-  font-size: 14px; color: var(--text-dim); font-family: var(--font-body);
-  font-style: italic; line-height: 1.45;
-  transition: opacity .15s;
-}
-.scale-desc strong { font-style: normal; font-weight: 500; color: var(--text); }
-
-.divider-line { height: 0.5px; background: var(--border); margin: 26px 0 0; }
-
-/* save */
 .save-btn {
-  margin: 28px 20px 0; width: calc(100% - 40px);
-  padding: 16px; border-radius: var(--radius);
+  margin: 40px 0 0; width: 100%;
+  padding: 18px; border-radius: var(--radius);
   border: 0.5px solid var(--border-active);
   background: var(--gold-dim); color: var(--gold-text);
-  font-family: var(--font-body); font-size: 18px; cursor: pointer;
+  font-family: var(--font-body); font-size: 19px; cursor: pointer;
   letter-spacing: .03em; transition: opacity .1s;
   display: flex; align-items: center; justify-content: center; gap: 10px;
 }
@@ -165,39 +98,15 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 }
 .save-btn.saving .spinner { display: block; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.save-feedback { text-align: center; font-size: 13px; color: var(--text-muted); margin: 10px 20px 0; font-family: var(--font-mono); min-height: 18px; }
+.save-feedback { text-align: center; font-size: 13px; color: var(--text-muted); margin: 14px 0 0; font-family: var(--font-mono); min-height: 18px; }
 
-/* history */
-.stats-bar {
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  border-top: 0.5px solid var(--border);
-  border-bottom: 0.5px solid var(--border); flex-shrink: 0;
+.today-stat {
+  margin-top: 30px; padding-top: 20px; border-top: 0.5px solid var(--border);
+  text-align: center;
 }
-.stat { padding: 14px 10px; text-align: center; }
-.stat-val { font-family: var(--font-mono); font-size: 17px; font-weight: 500; color: var(--gold-text); }
-.stat-label { font-size: 10px; color: var(--text-muted); letter-spacing: .08em; text-transform: uppercase; font-family: var(--font-mono); margin-top: 3px; }
+.today-stat-val { font-family: var(--font-mono); font-size: 20px; font-weight: 500; color: var(--gold-text); }
+.today-stat-label { font-size: 10px; color: var(--text-muted); letter-spacing: .08em; text-transform: uppercase; font-family: var(--font-mono); margin-top: 4px; }
 
-.hist-body { flex: 1; overflow-y: auto; padding-bottom: 40px; }
-.hist-day-label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); font-family: var(--font-mono); padding: 20px 20px 8px; }
-.hist-entry { padding: 14px 20px; border-bottom: 0.5px solid var(--border); display: flex; align-items: flex-start; gap: 14px; }
-.hist-time { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); width: 40px; flex-shrink: 0; padding-top: 2px; }
-.hist-main { flex: 1; }
-.hist-type { font-size: 16px; color: var(--text); }
-.hist-meta { display: flex; gap: 7px; margin-top: 5px; flex-wrap: wrap; align-items: center; }
-.hist-dur { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
-.hist-mantras { font-family: var(--font-mono); font-size: 12px; color: var(--gold); }
-.badge {
-  font-size: 11px; padding: 2px 8px; border-radius: 8px;
-  font-family: var(--font-mono);
-}
-.badge-stab  { background: rgba(100,140,200,0.12); color: #8ab0d8; }
-.badge-dev   { background: rgba(220,120,60,0.12);  color: #d4906a; }
-.badge-bodhi { background: var(--alive-bg); color: var(--alive); }
-.badge-sync  { background: transparent; color: var(--text-muted); }
-
-.empty-state { padding: 60px 20px; text-align: center; color: var(--text-muted); font-size: 15px; }
-
-/* setup banner */
 .setup-banner {
   margin: 20px 0 0; padding: 14px 16px;
   border: 0.5px solid var(--border-active);
@@ -221,178 +130,60 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 </head>
 <body>
 
-<!-- LOG SCREEN -->
-<div class="screen active" id="screen-log">
+<div class="screen">
   <div class="header">
-    <span class="header-title">Log session</span>
-    <span class="header-action" onclick="showHistory()">History</span>
+    <span class="header-title">Log mantras</span>
   </div>
 
   <div class="form-body">
 
     <div id="setup-area"></div>
 
-    <!-- Date & Time -->
     <div class="field">
-      <span class="field-label">Date &amp; time</span>
-      <div class="dt-row">
-        <input class="dt-input" type="date" id="inp-date">
-        <input class="dt-input" type="time" id="inp-time">
-      </div>
+      <span class="field-label">Date</span>
+      <input class="dt-input" type="date" id="inp-date">
     </div>
 
-    <!-- Duration -->
     <div class="field">
-      <span class="field-label">Duration</span>
-      <div class="dur-row">
-        <input class="dur-input" type="number" id="inp-dur" min="1" max="600" placeholder="60">
-        <span class="dur-unit">min</span>
-        <div class="dur-btns">
-          <button class="dur-btn" onclick="adjDur(-5)">−</button>
-          <button class="dur-btn" onclick="adjDur(5)">+</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Practice type -->
-    <div class="field">
-      <span class="field-label">Practice type</span>
-      <div class="chips">
-        <div class="chip on"  onclick="setType(this)">Daily Practice</div>
-        <div class="chip"     onclick="setType(this)">Ritual</div>
-        <div class="chip"     onclick="setType(this)">Prayer</div>
-        <div class="chip"     onclick="setType(this)">Study</div>
-      </div>
-    </div>
-
-    <!-- Mantras -->
-    <div class="field" id="mantra-field">
-      <span class="field-label">Mantras accumulated</span>
-      <input class="mantra-input" type="number" id="inp-mantras" placeholder="0" min="0">
+      <span class="field-label">Mantras</span>
+      <input class="mantra-input" type="number" id="inp-mantras" placeholder="0" min="0" inputmode="numeric">
       <div class="mantra-controls">
+        <button class="mantra-adj" onclick="adjMantras(-1000)">−</button>
         <button class="mantra-preset" onclick="setMantras(3000)">3k</button>
         <button class="mantra-preset" onclick="setMantras(10000)">10k</button>
-        <span class="mantra-sep"></span>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
-          <button class="mantra-adj" onclick="adjMantras(-1000)">−</button>
-          <span class="mantra-adj-label">1k</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
-          <button class="mantra-adj" onclick="adjMantras(1000)">+</button>
-          <span class="mantra-adj-label">1k</span>
-        </div>
+        <button class="mantra-adj" onclick="adjMantras(1000)">+</button>
       </div>
     </div>
 
-    <div class="divider-line"></div>
+    <button class="save-btn" id="save-btn" onclick="saveEntry()">
+      <span class="spinner" id="spinner"></span>
+      <span id="save-label">Save</span>
+    </button>
+    <div class="save-feedback" id="save-fb"></div>
 
-    <!-- Stability -->
-    <div class="field">
-      <span class="field-label">Stability — water</span>
-      <div class="scale-row" id="stab-row">
-        <button class="scale-btn" data-v="1" onclick="setScale('stab',1)">1</button>
-        <button class="scale-btn" data-v="2" onclick="setScale('stab',2)">2</button>
-        <button class="scale-btn" data-v="3" onclick="setScale('stab',3)">3</button>
-        <button class="scale-btn" data-v="4" onclick="setScale('stab',4)">4</button>
-        <button class="scale-btn" data-v="5" onclick="setScale('stab',5)">5</button>
-      </div>
-      <div class="scale-legend">1 stormy sea · 2 rippled lake · 3 settling water · 4 still lake · 5 mirror</div>
-      <div class="scale-desc" id="stab-desc"'></div>
-    </div>
-
-    <!-- Devotion -->
-    <div class="field">
-      <span class="field-label">Devotion — fire</span>
-      <div class="scale-row" id="dev-row">
-        <button class="scale-btn" data-v="1" onclick="setScale('dev',1)">1</button>
-        <button class="scale-btn" data-v="2" onclick="setScale('dev',2)">2</button>
-        <button class="scale-btn" data-v="3" onclick="setScale('dev',3)">3</button>
-        <button class="scale-btn" data-v="4" onclick="setScale('dev',4)">4</button>
-        <button class="scale-btn" data-v="5" onclick="setScale('dev',5)">5</button>
-      </div>
-      <div class="scale-legend">1 cold ash · 2 ember · 3 small flame · 4 steady flame · 5 open fire</div>
-      <div class="scale-desc" id="dev-desc"'></div>
-    </div>
-
-    <!-- Bodhichitta -->
-    <div class="field">
-      <span class="field-label">Bodhichitta — light</span>
-      <div class="scale-row" id="bodhi-row">
-        <button class="scale-btn" data-v="1" onclick="setScale('bodhi',1)">1</button>
-        <button class="scale-btn" data-v="2" onclick="setScale('bodhi',2)">2</button>
-        <button class="scale-btn" data-v="3" onclick="setScale('bodhi',3)">3</button>
-        <button class="scale-btn" data-v="4" onclick="setScale('bodhi',4)">4</button>
-        <button class="scale-btn" data-v="5" onclick="setScale('bodhi',5)">5</button>
-      </div>
-      <div class="scale-legend">1 dark · 2 candle · 3 lamp · 4 bright room · 5 open sky</div>
-      <div class="scale-desc" id="bodhi-desc"'></div>
+    <div class="today-stat">
+      <div class="today-stat-val" id="stat-today">—</div>
+      <div class="today-stat-label" id="stat-today-label">mantras today</div>
     </div>
 
   </div>
-
-  <button class="save-btn" id="save-btn" onclick="saveSession()">
-    <span class="spinner" id="spinner"></span>
-    <span id="save-label">Save session</span>
-  </button>
-  <div class="save-feedback" id="save-fb"></div>
-  <div style="height:28px"></div>
-</div>
-
-<!-- HISTORY SCREEN -->
-<div class="screen" id="screen-hist">
-  <div class="header">
-    <span class="header-title">Sessions</span>
-    <span class="header-action" onclick="showLog()">+ Log</span>
-  </div>
-  <div class="stats-bar" style="grid-template-columns:1fr 1fr">
-    <div class="stat"><div class="stat-val" id="stat-total">0</div><div class="stat-label">sessions today</div></div>
-    <div class="stat"><div class="stat-val" id="stat-mantras">—</div><div class="stat-label">mantras today</div></div>
-  </div>
-  <div class="hist-body" id="hist-body"></div>
 </div>
 
 <script>
-// ── DESCRIPTORS ─────────────────────────────────────────
-var DESC = {
-  stab: {
-    1: '<strong>Stormy sea</strong> — mind fully tossed; thoughts and turbulence dominate; the object is lost',
-    2: '<strong>Rippled lake</strong> — the object is there but the surface is restless; excitation or dullness keeps breaking through',
-    3: '<strong>Settling water</strong> — movement is lighter; subtle disturbances; the object held with some effort',
-    4: '<strong>Still lake</strong> — calm and clear for most of the session; minor ripples but the surface holds',
-    5: '<strong>Mirror</strong> — effortless stillness; the object reflected without distortion; no effort needed to remain'
-  },
-  dev: {
-    1: '<strong>Cold ash</strong> — no warmth; just going through the motions',
-    2: '<strong>Ember</strong> — a faint glow, easily lost; warmth flickers briefly then fades',
-    3: '<strong>Small flame</strong> — a real flame, tender but genuine; comes and goes but burns true when present',
-    4: '<strong>Steady flame</strong> — burns consistently through the session; warm, present, not easily disturbed',
-    5: '<strong>Open fire</strong> — strong and self-sustaining; the Guru is near; the practice has heat and pull'
-  },
-  bodhi: {
-    1: '<strong>Dark</strong> — no light; practice felt closed or self-contained',
-    2: '<strong>Candle</strong> — a small point of light; intention is there at the edges but doesn\'t illuminate the session',
-    3: '<strong>Lamp</strong> — genuine light in the room; warmth and openness colour moments of the session',
-    4: '<strong>Bright room</strong> — the whole session is lit; care and openness feel like the natural atmosphere',
-    5: '<strong>Open sky</strong> — boundless, directionless light; dedication to all beings is the flavour of the whole session'
-  }
-};
-
 // ── STATE ────────────────────────────────────────────────
-var vals = { stab: 0, dev: 0, bodhi: 0 };
-var practiceType = 'Daily Practice';
-var SHEET_URL = localStorage.getItem('sheet_url') || '';
+var SHEET_URL = localStorage.getItem('sheet_url_v2') || '';
 
 // ── INIT ─────────────────────────────────────────────────
 function init() {
-  initDateTime();
+  initDate();
   renderSetupArea();
+  updateTodayStat();
 }
 
-function initDateTime() {
+function initDate() {
   var now = new Date();
   var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
   document.getElementById('inp-date').value = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
-  document.getElementById('inp-time').value = pad(now.getHours())+':'+pad(now.getMinutes());
 }
 
 function renderSetupArea() {
@@ -405,23 +196,11 @@ function saveSheetUrl() {
   var v = document.getElementById('url-inp').value.trim();
   if (!v) return;
   SHEET_URL = v;
-  localStorage.setItem('sheet_url', v);
+  localStorage.setItem('sheet_url_v2', v);
   renderSetupArea();
 }
 
 // ── CONTROLS ─────────────────────────────────────────────
-function adjDur(d) {
-  var el = document.getElementById('inp-dur');
-  el.value = Math.max(1, Math.min(600, (parseInt(el.value)||0) + d));
-}
-
-function setType(el) {
-  document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
-  el.classList.add('on');
-  practiceType = el.textContent.trim();
-  document.getElementById('mantra-field').style.opacity = practiceType === 'Daily Practice' ? '1' : '0.5';
-}
-
 function setMantras(v) { document.getElementById('inp-mantras').value = v; }
 
 function adjMantras(d) {
@@ -429,30 +208,16 @@ function adjMantras(d) {
   el.value = Math.max(0, (parseInt(el.value)||0) + d);
 }
 
-function setScale(key, v) {
-  vals[key] = v;
-  document.querySelectorAll('#'+key+'-row .scale-btn').forEach(function(b){
-    b.classList.toggle('on', +b.dataset.v === v);
-  });
-  document.getElementById(key+'-desc').innerHTML = DESC[key][v];
-}
-
 // ── SAVE ─────────────────────────────────────────────────
-function saveSession() {
+function saveEntry() {
   var date    = document.getElementById('inp-date').value;
-  var time    = document.getElementById('inp-time').value;
-  var dur     = parseInt(document.getElementById('inp-dur').value) || 0;
   var mantras = parseInt(document.getElementById('inp-mantras').value) || 0;
-  if (!date || !dur) { showFeedback('add date and duration'); return; }
+  if (!date || !mantras) { showFeedback('add date and mantras'); return; }
 
-  var entry = {
-    id: Date.now(), date: date, time: time, dur: dur,
-    type: practiceType, mantras: mantras,
-    stab: vals.stab, dev: vals.dev, bodhi: vals.bodhi,
-    synced: false
-  };
+  var entry = { id: Date.now(), date: date, mantras: mantras, synced: false };
 
   saveLocal(entry);
+  updateTodayStat();
   showFeedback('saved');
   setSaving(true);
 
@@ -461,31 +226,24 @@ function saveSession() {
       setSaving(false);
       if (ok) { markSynced(entry.id); showFeedback('synced ↑'); }
       else { showFeedback('saved — sync failed'); }
-      setTimeout(function(){ resetForm(); }, 1400);
+      setTimeout(resetForm, 1200);
     });
   } else {
     setSaving(false);
-    setTimeout(function(){ resetForm(); }, 1000);
+    setTimeout(resetForm, 900);
   }
 }
 
 function sendToSheet(entry, cb) {
   var params = [
     'date='    + encodeURIComponent(entry.date),
-    'time='    + encodeURIComponent(entry.time),
-    'dur='     + entry.dur,
-    'type='    + encodeURIComponent(entry.type),
-    'mantras=' + entry.mantras,
-    'stab='    + entry.stab,
-    'dev='     + entry.dev,
-    'bodhi='   + entry.bodhi
+    'mantras=' + entry.mantras
   ].join('&');
 
   // no-cors responses are opaque — we can't read status, so assume success if no network error
   fetch(SHEET_URL + '?' + params, { method: 'GET', mode: 'no-cors' })
     .then(function(){ cb(true); })
     .catch(function(){
-      // fallback: try via image tag in case fetch is blocked
       var img = new Image();
       img.onload = img.onerror = function(){ cb(true); };
       img.src = SHEET_URL + '?' + params + '&t=' + Date.now();
@@ -495,100 +253,46 @@ function sendToSheet(entry, cb) {
 function setSaving(on) {
   document.getElementById('save-btn').classList.toggle('saving', on);
   document.getElementById('spinner').style.display = on ? 'block' : 'none';
-  document.getElementById('save-label').textContent = on ? 'Syncing...' : 'Save session';
+  document.getElementById('save-label').textContent = on ? 'Syncing...' : 'Save';
 }
 
 // ── LOCAL STORAGE ────────────────────────────────────────
 function loadAll() {
-  try { return JSON.parse(localStorage.getItem('prac_log')||'[]'); } catch(e){ return []; }
+  try { return JSON.parse(localStorage.getItem('mantra_log')||'[]'); } catch(e){ return []; }
 }
 function saveLocal(entry) {
   var d = loadAll(); d.unshift(entry);
-  try { localStorage.setItem('prac_log', JSON.stringify(d)); } catch(e){}
+  try { localStorage.setItem('mantra_log', JSON.stringify(d)); } catch(e){}
 }
 function markSynced(id) {
   var d = loadAll();
   d.forEach(function(e){ if(e.id===id) e.synced=true; });
-  try { localStorage.setItem('prac_log', JSON.stringify(d)); } catch(e){}
+  try { localStorage.setItem('mantra_log', JSON.stringify(d)); } catch(e){}
+}
+
+// ── STATS ────────────────────────────────────────────────
+function updateTodayStat() {
+  var now = new Date();
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  var today = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  var all = loadAll();
+  var td = all.filter(function(e){ return e.date === today; });
+  var total = td.reduce(function(s,e){ return s+(e.mantras||0); }, 0);
+  document.getElementById('stat-today').textContent = total ? total.toLocaleString() : '—';
+  document.getElementById('stat-today-label').textContent = td.length + (td.length===1 ? ' entry today' : ' entries today');
 }
 
 // ── RESET ────────────────────────────────────────────────
 function resetForm() {
-  initDateTime();
-  document.getElementById('inp-dur').value = '';
+  initDate();
   document.getElementById('inp-mantras').value = '';
-  vals = { stab:0, dev:0, bodhi:0 };
-  ['stab','dev','bodhi'].forEach(function(k){
-    document.querySelectorAll('#'+k+'-row .scale-btn').forEach(function(b){ b.classList.remove('on'); });
-    document.getElementById(k+'-desc').innerHTML = '';
-  });
-  document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
-  document.querySelector('.chip').classList.add('on');
-  practiceType = 'Daily Practice';
-  document.getElementById('mantra-field').style.opacity = '1';
   document.getElementById('save-fb').textContent = '';
 }
 
 function showFeedback(msg) { document.getElementById('save-fb').textContent = msg; }
 
-// ── HISTORY ──────────────────────────────────────────────
-function showHistory() {
-  document.getElementById('screen-log').classList.remove('active');
-  document.getElementById('screen-hist').classList.add('active');
-  renderHistory();
-}
-function showLog() {
-  document.getElementById('screen-hist').classList.remove('active');
-  document.getElementById('screen-log').classList.add('active');
-}
-
-function renderHistory() {
-  var all  = loadAll();
-  var today = new Date().toISOString().slice(0,10);
-  var data = all.filter(function(e){ return e.date === today; });
-  var body = document.getElementById('hist-body');
-  updateStats(all);
-
-  var html = '';
-  if (!data.length) {
-    html += '<div class="empty-state">No sessions today</div>';
-  } else {
-    data.forEach(function(e){
-      html += '<div class="hist-entry"><div class="hist-time">'+(e.time||'')+'</div>';
-      html += '<div class="hist-main"><div class="hist-type">'+e.type+'</div>';
-      html += '<div class="hist-meta">';
-      html += '<span class="hist-dur">'+e.dur+'min</span>';
-      if (e.mantras) html += '<span class="hist-mantras">'+e.mantras.toLocaleString()+'</span>';
-      if (e.stab)  html += '<span class="badge badge-stab">~'+e.stab+'</span>';
-      if (e.dev)   html += '<span class="badge badge-dev">🔥'+e.dev+'</span>';
-      if (e.bodhi) html += '<span class="badge badge-bodhi">☀'+e.bodhi+'</span>';
-      html += '</div></div></div>';
-    });
-  }
-  html += '<div style="text-align:center;padding:24px 0 8px"><button onclick="clearAll()" style="background:none;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;cursor:pointer;text-decoration:underline">clear local history</button></div>';
-  body.innerHTML = html;
-}
-
-function clearAll() {
-  localStorage.removeItem('prac_log');
-  renderHistory();
-}
-
-function updateStats(data) {
-  var today = new Date().toISOString().slice(0,10);
-  var td = data.filter(function(e){ return e.date===today; });
-  var tm = td.reduce(function(s,e){ return s+(e.mantras||0); },0);
-  document.getElementById('stat-total').textContent   = td.length;
-  document.getElementById('stat-mantras').textContent = tm ? tm.toLocaleString() : '—';
-}
-
-function formatDate(d) {
-  var p = d.split('-');
-  var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return parseInt(p[2])+' '+m[parseInt(p[1])-1];
-}
-
 init();
 </script>
 
 </body>
+</html>
