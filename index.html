@@ -25,9 +25,33 @@
   --font-mono: 'DM Mono', monospace;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 17px; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 17px; }
 
-.screen { display: flex; min-height: 100vh; flex-direction: column; }
+/* ── PAGER (horizontal swipe between screens) ── */
+.pager {
+  display: flex; width: 100vw; height: 100vh; height: 100dvh;
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain; scrollbar-width: none;
+}
+.pager::-webkit-scrollbar { display: none; }
+.screen {
+  flex: 0 0 100vw; width: 100vw; height: 100%;
+  overflow-y: auto; overflow-x: hidden;
+  scroll-snap-align: start; scroll-snap-stop: always;
+  display: flex; flex-direction: column;
+}
+
+.dots {
+  position: fixed; left: 0; right: 0; bottom: 18px;
+  display: flex; justify-content: center; gap: 8px; pointer-events: none;
+}
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text-muted); transition: background .2s, transform .2s;
+  pointer-events: auto; cursor: pointer;
+}
+.dot.on { background: var(--gold); transform: scale(1.15); }
 
 .header {
   padding: 56px 20px 14px;
@@ -36,7 +60,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 }
 .header-title { font-size: 13px; letter-spacing: .12em; color: var(--text-dim); font-family: var(--font-mono); text-transform: uppercase; }
 
-.form-body { flex: 1; padding: 0 20px 40px; overflow-y: auto; }
+.form-body { flex: 1; padding: 0 20px 60px; }
 
 .field { margin-top: 30px; }
 .field-label {
@@ -126,64 +150,163 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   background: transparent; color: var(--gold-text);
   font-family: var(--font-mono); font-size: 12px; cursor: pointer;
 }
+
+/* ── STATS ── */
+.stat-card {
+  margin-top: 18px; padding: 20px 18px 18px;
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+}
+.stat-card:first-child { margin-top: 30px; }
+.stat-card-label {
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-muted); font-family: var(--font-mono);
+}
+.stat-card-val {
+  margin-top: 10px; font-family: var(--font-mono); font-size: 34px; font-weight: 500;
+  color: var(--gold-text); line-height: 1.1; letter-spacing: -.01em;
+}
+.stat-card-sub {
+  margin-top: 8px; font-size: 15px; font-style: italic;
+  color: var(--text-dim); line-height: 1.4; min-height: 21px;
+}
+.progress {
+  margin-top: 14px; height: 3px; border-radius: 2px;
+  background: var(--border); overflow: hidden;
+}
+.progress-fill { height: 100%; width: 0; background: var(--gold); transition: width .6s ease; }
+
+.stats-foot {
+  margin-top: 26px; text-align: center;
+  font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);
+  letter-spacing: .02em; line-height: 1.8;
+}
+.stats-foot .link { color: var(--text-dim); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.stats-settings { display: none; margin-top: 14px; }
+.stats-settings.open { display: block; }
+.stats-settings .field-label { margin: 14px 0 6px; }
+.stats-settings .setup-input { margin-top: 0; font-size: 14px; }
 </style>
 </head>
 <body>
 
-<div class="screen">
-  <div class="header">
-    <span class="header-title">Log mantras</span>
-  </div>
+<div class="pager" id="pager">
 
-  <div class="form-body">
-
-    <div id="setup-area"></div>
-
-    <div class="field">
-      <span class="field-label">Date</span>
-      <input class="dt-input" type="date" id="inp-date">
+  <!-- ── PAGE 1: LOG ── -->
+  <div class="screen" id="page-log">
+    <div class="header">
+      <span class="header-title">Log mantras</span>
     </div>
 
-    <div class="field">
-      <span class="field-label">Mantras</span>
-      <input class="mantra-input" type="number" id="inp-mantras" placeholder="0" min="0" inputmode="numeric">
-      <div class="mantra-controls">
-        <button class="mantra-adj" onclick="adjMantras(-1000)">−</button>
-        <button class="mantra-preset" onclick="setMantras(3000)">3k</button>
-        <button class="mantra-preset" onclick="setMantras(10000)">10k</button>
-        <button class="mantra-adj" onclick="adjMantras(1000)">+</button>
+    <div class="form-body">
+
+      <div id="setup-area"></div>
+
+      <div class="field">
+        <span class="field-label">Date</span>
+        <input class="dt-input" type="date" id="inp-date">
       </div>
+
+      <div class="field">
+        <span class="field-label">Mantras</span>
+        <input class="mantra-input" type="number" id="inp-mantras" placeholder="0" min="0" inputmode="numeric">
+        <div class="mantra-controls">
+          <button class="mantra-adj" onclick="adjMantras(-1000)">−</button>
+          <button class="mantra-preset" onclick="setMantras(3000)">3k</button>
+          <button class="mantra-preset" onclick="setMantras(10000)">10k</button>
+          <button class="mantra-adj" onclick="adjMantras(1000)">+</button>
+        </div>
+      </div>
+
+      <button class="save-btn" id="save-btn" onclick="saveEntry()">
+        <span class="spinner" id="spinner"></span>
+        <span id="save-label">Save</span>
+      </button>
+      <div class="save-feedback" id="save-fb"></div>
+
+      <div class="today-stat">
+        <div class="today-stat-val" id="stat-today">—</div>
+        <div class="today-stat-label" id="stat-today-label">mantras today</div>
+      </div>
+
     </div>
-
-    <button class="save-btn" id="save-btn" onclick="saveEntry()">
-      <span class="spinner" id="spinner"></span>
-      <span id="save-label">Save</span>
-    </button>
-    <div class="save-feedback" id="save-fb"></div>
-
-    <div class="today-stat">
-      <div class="today-stat-val" id="stat-today">—</div>
-      <div class="today-stat-label" id="stat-today-label">mantras today</div>
-    </div>
-
   </div>
+
+  <!-- ── PAGE 2: STATS ── -->
+  <div class="screen" id="page-stats">
+    <div class="header">
+      <span class="header-title">Stats</span>
+    </div>
+
+    <div class="form-body">
+
+      <div class="stat-card">
+        <div class="stat-card-label">7MA</div>
+        <div class="stat-card-val" id="st-ma">—</div>
+        <div class="stat-card-sub" id="st-ma-sub"></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-label">Total</div>
+        <div class="stat-card-val" id="st-total">—</div>
+        <div class="stat-card-sub" id="st-total-sub"></div>
+        <div class="progress"><div class="progress-fill" id="st-progress"></div></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-label">Projected Finish</div>
+        <div class="stat-card-val" id="st-finish">—</div>
+        <div class="stat-card-sub" id="st-finish-sub"></div>
+      </div>
+
+      <div class="stats-foot">
+        <span id="st-status">not loaded yet</span><br>
+        <span class="link" onclick="refreshStats(true)">refresh</span>
+        &nbsp;·&nbsp;
+        <span class="link" onclick="toggleStatsSettings()">settings</span>
+      </div>
+
+      <div class="stats-settings" id="stats-settings">
+        <span class="field-label">Goal</span>
+        <input class="setup-input" type="number" inputmode="numeric" id="set-goal">
+        <span class="field-label">Mantras before sheet began</span>
+        <input class="setup-input" type="number" inputmode="numeric" id="set-prior" placeholder="0">
+        <button class="setup-save-btn" onclick="saveStatsSettings()">Save settings</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="dots" id="dots">
+  <span class="dot on" onclick="goToPage(0)"></span>
+  <span class="dot" onclick="goToPage(1)"></span>
 </div>
 
 <script>
 // ── STATE ────────────────────────────────────────────────
 var SHEET_URL = localStorage.getItem('sheet_url_v2') || '';
 
+// Google Sheet that the Apps Script writes to (read-only access via the public gviz endpoint)
+var STATS_SHEET_ID  = '1Q9NlgikwfVnIb0wGEwrLdJezBUPbtdhNENHKY5V6txw';
+var STATS_SHEET_TAB = 'Mantra Log';
+
+var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+function ymd(d) { return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function todayKey() { return ymd(new Date()); }
+
 // ── INIT ─────────────────────────────────────────────────
 function init() {
   initDate();
   renderSetupArea();
   updateTodayStat();
+  initPager();
+  renderStats();          // show last cached numbers straight away
 }
 
 function initDate() {
-  var now = new Date();
-  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
-  document.getElementById('inp-date').value = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+  document.getElementById('inp-date').value = todayKey();
 }
 
 function renderSetupArea() {
@@ -198,6 +321,34 @@ function saveSheetUrl() {
   SHEET_URL = v;
   localStorage.setItem('sheet_url_v2', v);
   renderSetupArea();
+}
+
+// ── PAGER ────────────────────────────────────────────────
+var currentPage = 0;
+
+function initPager() {
+  var pager = document.getElementById('pager');
+  var t;
+  pager.addEventListener('scroll', function(){
+    clearTimeout(t);
+    t = setTimeout(function(){
+      var idx = Math.round(pager.scrollLeft / pager.clientWidth);
+      if (idx !== currentPage) onPageChange(idx);
+    }, 60);
+  }, { passive: true });
+}
+
+function goToPage(i) {
+  var pager = document.getElementById('pager');
+  pager.scrollTo({ left: i * pager.clientWidth, behavior: 'smooth' });
+}
+
+function onPageChange(idx) {
+  currentPage = idx;
+  var dots = document.querySelectorAll('.dot');
+  for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('on', i === idx);
+  if (document.activeElement) document.activeElement.blur();
+  if (idx === 1) refreshStats(false);
 }
 
 // ── CONTROLS ─────────────────────────────────────────────
@@ -226,6 +377,7 @@ function saveEntry() {
       setSaving(false);
       if (ok) { markSynced(entry.id); showFeedback('synced ↑'); }
       else { showFeedback('saved — sync failed'); }
+      statsDirty = true;   // next visit to Stats pulls fresh numbers
       setTimeout(resetForm, 1200);
     });
   } else {
@@ -270,13 +422,10 @@ function markSynced(id) {
   try { localStorage.setItem('mantra_log', JSON.stringify(d)); } catch(e){}
 }
 
-// ── STATS ────────────────────────────────────────────────
+// ── TODAY STAT (log page) ────────────────────────────────
 function updateTodayStat() {
-  var now = new Date();
-  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
-  var today = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
-  var all = loadAll();
-  var td = all.filter(function(e){ return e.date === today; });
+  var today = todayKey();
+  var td = loadAll().filter(function(e){ return e.date === today; });
   var total = td.reduce(function(s,e){ return s+(e.mantras||0); }, 0);
   document.getElementById('stat-today').textContent = total ? total.toLocaleString() : '—';
   document.getElementById('stat-today-label').textContent = td.length + (td.length===1 ? ' entry today' : ' entries today');
@@ -290,6 +439,161 @@ function resetForm() {
 }
 
 function showFeedback(msg) { document.getElementById('save-fb').textContent = msg; }
+
+// ══════════════════════════════════════════════════════════
+// ── STATS ────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+var statsDirty   = true;
+var statsLoading = false;
+var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function getGoal()  { return parseInt(localStorage.getItem('stats_goal'))  || 10000000; }
+function getPrior() { return parseInt(localStorage.getItem('stats_prior')) || 0; }
+
+function loadStatsCache() {
+  try { return JSON.parse(localStorage.getItem('stats_cache') || 'null'); } catch(e){ return null; }
+}
+function saveStatsCache(c) {
+  try { localStorage.setItem('stats_cache', JSON.stringify(c)); } catch(e){}
+}
+
+// Pull the Mantra Log tab through the Sheets visualization endpoint (CORS-enabled, needs
+// the sheet shared as "anyone with the link can view"). Only Date + Mantras are read.
+function refreshStats(force) {
+  var cache = loadStatsCache();
+  var fresh = cache && (Date.now() - cache.fetched < 30000);
+  if (statsLoading || (!force && !statsDirty && fresh)) return;
+
+  statsLoading = true;
+  setStatsStatus('loading…');
+
+  var url = 'https://docs.google.com/spreadsheets/d/' + STATS_SHEET_ID +
+            '/gviz/tq?tqx=out:json&headers=1' +
+            '&sheet=' + encodeURIComponent(STATS_SHEET_TAB) +
+            '&tq='    + encodeURIComponent('select B, C') +
+            '&t='     + Date.now();
+
+  fetch(url, { cache: 'no-store' })
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      var byDay = parseGviz(txt);
+      saveStatsCache({ byDay: byDay, fetched: Date.now() });
+      statsDirty = false;
+      renderStats();
+    })
+    .catch(function(err){
+      renderStats();
+      setStatsStatus('couldn\'t reach sheet' + (cache ? ' — showing last data' : ''));
+    })
+    .then(function(){ statsLoading = false; });
+}
+
+// gviz wraps JSON in a JS callback: google.visualization.Query.setResponse({...});
+function parseGviz(txt) {
+  var j = JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+  if (j.status === 'error') throw new Error('sheet error');
+  var byDay = {};
+  (j.table.rows || []).forEach(function(r){
+    if (!r || !r.c) return;
+    var key = cellToDateKey(r.c[0]);
+    var n   = cellToNumber(r.c[1]);
+    if (!key || !n) return;
+    byDay[key] = (byDay[key] || 0) + n;
+  });
+  return byDay;
+}
+
+function cellToDateKey(c) {
+  if (!c || c.v == null) return null;
+  var v = String(c.v), m;
+  if ((m = /^Date\((\d+),(\d+),(\d+)/.exec(v)))       return m[1]+'-'+pad(+m[2]+1)+'-'+pad(+m[3]);   // gviz date (month 0-based)
+  if ((m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(v)))   return m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]);     // 2026-08-10
+  if ((m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(v))) return m[3]+'-'+pad(+m[1])+'-'+pad(+m[2]);     // 8/10/2026
+  return null;
+}
+
+function cellToNumber(c) {
+  if (!c || c.v == null) return 0;
+  var n = typeof c.v === 'number' ? c.v : parseFloat(String(c.v).replace(/[^\d.\-]/g, ''));
+  return isFinite(n) ? n : 0;
+}
+
+function addDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
+function fmtDate(d)  { return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear(); }
+function fmtShort(d) { return d.getDate() + ' ' + MONTHS[d.getMonth()]; }
+function fmtNum(n)   { return Math.round(n).toLocaleString(); }
+
+function computeStats(byDay) {
+  var today = new Date();
+
+  // 7MA — the seven full days before today; days without entries count as 0
+  var sum7 = 0;
+  for (var i = 1; i <= 7; i++) sum7 += byDay[ymd(addDays(today, -i))] || 0;
+  var ma = sum7 / 7;
+
+  var sheetTotal = 0;
+  for (var k in byDay) sheetTotal += byDay[k];
+  var total = sheetTotal + getPrior();
+
+  var goal = getGoal();
+  var remaining = Math.max(0, goal - total);
+  var daysLeft = ma > 0 ? Math.ceil(remaining / ma) : null;
+
+  return {
+    ma: ma, from: addDays(today, -7), to: addDays(today, -1),
+    total: total, goal: goal, remaining: remaining,
+    daysLeft: daysLeft,
+    finish: daysLeft != null ? addDays(today, daysLeft) : null
+  };
+}
+
+function renderStats() {
+  var cache = loadStatsCache();
+  if (!cache) return;
+  var s = computeStats(cache.byDay || {});
+
+  document.getElementById('st-ma').textContent = fmtNum(s.ma);
+  document.getElementById('st-ma-sub').textContent = 'per day · ' + fmtShort(s.from) + ' – ' + fmtShort(s.to);
+
+  var pct = s.goal ? Math.min(100, s.total / s.goal * 100) : 0;
+  document.getElementById('st-total').textContent = fmtNum(s.total);
+  document.getElementById('st-total-sub').textContent = pct.toFixed(1) + '% of ' + fmtNum(s.goal) + ' · ' + fmtNum(s.remaining) + ' to go';
+  document.getElementById('st-progress').style.width = pct + '%';
+
+  if (s.remaining === 0) {
+    document.getElementById('st-finish').textContent = 'Complete';
+    document.getElementById('st-finish-sub').textContent = 'goal reached';
+  } else if (s.finish) {
+    document.getElementById('st-finish').textContent = fmtDate(s.finish);
+    document.getElementById('st-finish-sub').textContent = 'in ' + fmtNum(s.daysLeft) + ' days at the current 7MA';
+  } else {
+    document.getElementById('st-finish').textContent = '—';
+    document.getElementById('st-finish-sub').textContent = 'no mantras in the last 7 days';
+  }
+
+  var t = new Date(cache.fetched);
+  setStatsStatus('updated ' + fmtShort(t) + ', ' + pad(t.getHours()) + ':' + pad(t.getMinutes()));
+}
+
+function setStatsStatus(msg) { document.getElementById('st-status').textContent = msg; }
+
+function toggleStatsSettings() {
+  var el = document.getElementById('stats-settings');
+  if (!el.classList.contains('open')) {
+    document.getElementById('set-goal').value  = getGoal();
+    document.getElementById('set-prior').value = getPrior() || '';
+  }
+  el.classList.toggle('open');
+}
+
+function saveStatsSettings() {
+  var g = parseInt(document.getElementById('set-goal').value)  || 10000000;
+  var p = parseInt(document.getElementById('set-prior').value) || 0;
+  localStorage.setItem('stats_goal',  g);
+  localStorage.setItem('stats_prior', p);
+  document.getElementById('stats-settings').classList.remove('open');
+  renderStats();
+}
 
 init();
 </script>
