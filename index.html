@@ -257,6 +257,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
         <div class="stat-card-label">Projected Finish</div>
         <div class="stat-card-val" id="st-finish">—</div>
         <div class="stat-card-sub" id="st-finish-sub"></div>
+        <div class="stat-card-sub" id="st-target-sub" style="margin-top:2px"></div>
       </div>
 
       <div class="stats-foot">
@@ -445,6 +446,7 @@ function showFeedback(msg) { document.getElementById('save-fb').textContent = ms
 // ══════════════════════════════════════════════════════════
 var statsDirty   = true;
 var statsLoading = false;
+var TARGET_FINISH = new Date(2026, 11, 21);   // 21 Dec 2026 — target used for the "7MA needed" line
 var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function getGoal()  { return parseInt(localStorage.getItem('stats_goal'))  || 10000000; }
@@ -539,8 +541,14 @@ function computeStats(byDay) {
   var remaining = Math.max(0, goal - total);
   var daysLeft = ma > 0 ? Math.ceil(remaining / ma) : null;
 
+  // 7MA needed to finish on the target date: remaining spread over the days from tomorrow to the target
+  var t0 = addDays(today, 0);
+  var targetDays = Math.round((TARGET_FINISH - t0) / 86400000);
+  var neededMa = targetDays > 0 ? remaining / targetDays : null;
+
   return {
     ma: ma, from: addDays(today, -7), to: addDays(today, -1),
+    targetDays: targetDays, neededMa: neededMa,
     total: total, goal: goal, remaining: remaining,
     daysLeft: daysLeft,
     finish: daysLeft != null ? addDays(today, daysLeft) : null
@@ -570,6 +578,11 @@ function renderStats() {
     document.getElementById('st-finish').textContent = '—';
     document.getElementById('st-finish-sub').textContent = 'no mantras in the last 7 days';
   }
+
+  var tgt = document.getElementById('st-target-sub');
+  if (s.remaining === 0)      tgt.textContent = '';
+  else if (s.neededMa != null) tgt.textContent = fmtNum(s.neededMa) + ' 7MA needed to finish ' + fmtDate(TARGET_FINISH);
+  else                         tgt.textContent = 'target date ' + fmtDate(TARGET_FINISH) + ' has passed';
 
   var t = new Date(cache.fetched);
   setStatsStatus('updated ' + fmtShort(t) + ', ' + pad(t.getHours()) + ':' + pad(t.getMinutes()));
